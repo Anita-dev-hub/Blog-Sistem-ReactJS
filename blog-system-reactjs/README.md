@@ -6,7 +6,7 @@ A modern blog system built with ReactJS.
  - [x] Install vite react project
  - [x] Clean up the project
  - [x] Add assets to public folder
- - [ ] Add html to App component
+ <!-- - [ ] Add html to App component
  - [ ] Add root element (or empty tag / fragment)
  - [ ] Convert html comments to jsx comments
  - [ ] Fix self closing tags
@@ -17,4 +17,7 @@ A modern blog system built with ReactJS.
  - [ ] Add index.html header links and scripts
  - [ ] Extract components by sections
  - [ ] Extract Service Card as reusable component
- - [ ] Extract Project Card as reusable component
+ - [ ] Extract Project Card as reusable component -->
+ - [x] Create components folder
+ - [x] Add about page - file with jsx code
+ - [x] Add navLink to App.jsx 
