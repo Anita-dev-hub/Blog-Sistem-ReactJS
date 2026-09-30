@@ -6,6 +6,7 @@ A modern blog system built with ReactJS.
  - [x] Install vite react project
  - [x] Clean up the project
  - [x] Add assets to public folder
+ - [x] Add components
  <!-- - [ ] Add html to App component
  - [ ] Add root element (or empty tag / fragment)
  - [ ] Convert html comments to jsx comments
