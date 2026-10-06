@@ -48,3 +48,4 @@ To stop the development server, press `Ctrl + C` in the terminal.
  - [x] Add navLink to App.jsx 
  - [x] Install and add routes
  - [x] Create header and footer component
+ - [x] Clear code in the other components
