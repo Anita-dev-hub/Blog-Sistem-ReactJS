@@ -1,4 +1,32 @@
-React – Project
+Blog System - ReactJS
+A modern blog system built with ReactJS.
+
+Installation
+To install the project dependencies, run:
+
+npm install
+Running the Project
+After installing the dependencies, start the development server with:
+
+npm run dev
+The project will be available at the URL shown in the terminal, usually:
+
+http://localhost:5173
+To stop the development server, press Ctrl + C in the terminal.
+
+Steps
+ Install vite react project
+ Clean up the project
+ Add assets to public folder
+ Create components folder
+ Add components files
+ Add about page - file with jsx code
+ Install and add routes
+ Clear code in the other components
+ npm install @supabase/supabase-js
+ Create css folder and add style
+ 
+ ReactJS – Project
 Functional Guide
 1. Project Overview
 
