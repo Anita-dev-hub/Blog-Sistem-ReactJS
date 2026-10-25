@@ -5,7 +5,7 @@ import { Route as AuthenticatedRouteImport } from "./routes/authenticated/route"
 import { Route as AboutRouteImport } from "./routes/about";
 import { Route as ContactRouteImport } from "./routes/contact";
 import { Route as LoginRouteImport } from "./routes/login";
-import { Route as NewPostRouteImport } from "./routes/_authenticated/new";
+import { Route as NewPostRouteImport } from "./routes/authenticated/new";
 import { Route as BlogIndexRouteImport } from "./routes/blog.index";
 import { Route as BlogIdRouteImport } from "./routes/blog.$id";
 import { Route as EditPostRouteImport } from "./routes/authenticated/edit.$id";
@@ -17,7 +17,7 @@ const IndexRoute = IndexRouteImport.update({
 });
 
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
-  id: "/_authenticated",
+  id: "/authenticated",
   getParentRoute: () => rootRouteImport,
 });
 

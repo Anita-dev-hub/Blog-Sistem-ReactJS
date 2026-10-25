@@ -2,11 +2,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Layout, PageHeader } from "../components/Layout";
-import { PostForm } from "../components/PostForm";
-import { supabase } from "../auth/client.js";
+import { Layout, PageHeader } from "../../components/layout";
+import { PostForm } from "../../components/PostForm";
+import { supabase } from "../../auth/client.js";
 
-export const Route = createFileRoute("/_authenticated/new")({
+export const Route = createFileRoute("/authenticated/new")({
   component: NewPost,
 });
 

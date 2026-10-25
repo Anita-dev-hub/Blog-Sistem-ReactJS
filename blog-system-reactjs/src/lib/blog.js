@@ -6,7 +6,7 @@ export const postsQuery = queryOptions({
   queryKey: ["blog"],
   queryFn: async () => {
     const { data, error } = await supabase
-      .from("blog")
+      .from("blogs")
       .select("*")
       .order("created_at", { ascending: false });
 
@@ -20,7 +20,7 @@ export const postQuery = (id) =>
     queryKey: ["blog", id],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("blog")
+        .from("blogs")
         .select("*")
         .eq("id", id)
         .maybeSingle();
