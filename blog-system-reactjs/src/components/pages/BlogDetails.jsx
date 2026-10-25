@@ -1,4 +1,18 @@
+import { useEffect } from 'react';
+import { useParams } from 'react-router';
+import request from '../../utils/request.js';
+
 export default function BlogDetails() {
+    const { blogId } = useParams();
+    const [blog, setBlog] = useState(null);
+
+    useEffect(() => {
+        request(`blogs?id=eq.${blogId}`)
+        .then(result => {
+            setBlog(result[0]);
+        })
+        .catch((error) => alert(error));
+    }, [blogId]);
     return (
         <>
             <meta charSet="utf-8" />

@@ -50,3 +50,4 @@ To stop the development server, press `Ctrl + C` in the terminal.
  - [x] Create header and footer component
  - [x] Clear code in the other components
  - [X] npm install @supabase/supabase-js
+ - [x] Create css folder and add style

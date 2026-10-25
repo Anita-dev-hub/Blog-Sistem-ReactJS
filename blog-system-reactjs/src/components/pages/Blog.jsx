@@ -1,6 +1,6 @@
 
 export default function Blog() {
-
+    
     return (
         <>
             <meta charSet="utf-8" />
