@@ -1,2 +1,2 @@
-export const SUPABASE_URL = "https://lpusbykdwwemckawyfli.supabase.co";
-export const SUPABASE_KEY = "sb_publishable_95dbRti3pImzfl5QbDwC6g_iP_Z7GdM";
+export const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+export const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_KEY;
