@@ -38,14 +38,24 @@ function Login() {
 
         try {
             if (mode === "in") {
-                const { error } = await supabase.auth.signInWithPassword({
+                const { data, error } = await supabase.auth.signInWithPassword({
                     email: normalizedEmail,
                     password,
                 });
 
                 if (error) {
+                    console.error("Supabase login error:", {
+                    message: error.message,
+                    status: error.status,
+                    code: error.code,
+                });
                     setMsg(error.message);
                     return;
+                }
+
+                if (!data.session) {
+                setMsg("Login failed: no session was returned.");
+                return;
                 }
 
                 await navigate({ to: "/new" });
@@ -59,6 +69,7 @@ function Login() {
                 });
 
                 if (error) {
+                    console.error("Supabase signup error:", error);
                     setMsg(error.message);
                     return;
                 }
@@ -71,8 +82,11 @@ function Login() {
                     );
                 }
             }
-        } catch {
-            setMsg("Something went wrong. Please try again.");
+        } catch (error){
+            console.error("Unexpected authentication error:", error);
+        setMsg(error instanceof Error
+            ? error.message
+            : "Something went wrong. Please try again.");
         } finally {
             setBusy(false);
         }

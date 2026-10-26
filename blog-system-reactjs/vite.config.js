@@ -5,6 +5,7 @@ import path from "node:path";
 
 export default defineConfig({
   plugins: [react()],
+  base: "/Blog-Sistem-ReactJS/",
   test: {
     environment: "jsdom",
     globals: true,
