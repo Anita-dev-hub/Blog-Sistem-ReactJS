@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useAuth } from "../lib/auth.jsx";
 export function Layout({ children }) {
   const [open, setOpen] = useState(false);
-  const { user, signOut } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const email = user?.email ?? null;
   const navigate = useNavigate();
   const qc = useQueryClient();
@@ -79,40 +79,44 @@ export function Layout({ children }) {
                   <a
                     href="#"
                     className={nav}
-                    onClick={(e) => {
+                    onClick={async (e) => {
                       e.preventDefault();
-                      signOut().then(() => {
-                        qc.invalidateQueries();
-                        navigate({ to: "/login", replace: true });
-                      });
+                      const { error } = await signOut();
+
+                      if (error) {
+                        console.error("Sign out failed:", error.message);
+                        return;
+                      }
+                      await qc.invalidateQueries();
+                      await navigate({ to: "/login", replace: true });
                     }}
                   >
-                    Sign out ({email})
-                  </a>
-                ) : (
-                  <Link to="/login" className={nav} activeProps={{ className: "active" }}>
-                    Sign in
-                  </Link>
+                Sign out ({email})
+              </a>
+              ) : (
+              <Link to="/login" className={nav} activeProps={{ className: "active" }}>
+                Sign in
+              </Link>
                 )}
-              </div>
             </div>
-          </nav>
         </div>
-        {children}
-        <div className="container py-4 bg-secondary text-center">
-          <p className="m-0 text-white">
-            &copy;{" "}
-            <Link className="text-white font-weight-bold" to="/">
-              Bloggy
-            </Link>
-            . All Rights Reserved. Designed by{" "}
-            <a className="text-white font-weight-bold" href="https://htmlcodex.com">
-              HTML Codex
-            </a>
-          </p>
-        </div>
-      </div>
+      </nav>
     </div>
+        { children }
+  <div className="container py-4 bg-secondary text-center">
+    <p className="m-0 text-white">
+      &copy;{" "}
+      <Link className="text-white font-weight-bold" to="/">
+        Bloggy
+      </Link>
+      . All Rights Reserved. Designed by{" "}
+      <a className="text-white font-weight-bold" href="https://htmlcodex.com">
+        HTML Codex
+      </a>
+    </p>
+  </div>
+      </div >
+    </div >
   );
 }
 export function PageHeader({ title }) {

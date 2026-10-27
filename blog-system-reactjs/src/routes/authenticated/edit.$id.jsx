@@ -27,7 +27,7 @@ function EditPost() {
     setErr(null);
 
     supabase
-      .from("blog")
+      .from("blogs")
       .select("*")
       .eq("id", id)
       .abortSignal(ctrl.signal)
@@ -59,7 +59,7 @@ function EditPost() {
 
     try {
       const { data, error } = await supabase
-        .from("blog")
+        .from("blogs")
         .update({
           title: values.title,
           topic: values.topic,

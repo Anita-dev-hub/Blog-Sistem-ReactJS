@@ -23,7 +23,7 @@ function NewPost() {
 
     try {
       const { data, error } = await supabase
-        .from("blog")
+        .from("blogs")
         .insert(values)
         .select("id")
         .single();

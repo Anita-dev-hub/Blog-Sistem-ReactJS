@@ -78,7 +78,7 @@ function PostDetail() {
 
     try {
       const { data, error } = await supabase
-        .from("blog")
+        .from("blogs")
         .delete()
         .eq("id", post.id)
         .select("id");
