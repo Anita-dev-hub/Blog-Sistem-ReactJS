@@ -34,7 +34,7 @@ export function Reactions({ postId }) {
 
     async function react(value) {
         if (!user) {
-        return setErr("Please sign in to react.");
+            return setErr("Please sign in to react.");
         }
         setErr(null);
         const res =
@@ -97,8 +97,8 @@ export function Comments({ postId }) {
         e.preventDefault();
 
         if (!user) {
-        return setErr("Please sign in to comment.");
-        } 
+            return setErr("Please sign in to comment.");
+        }
 
         const text = body.trim();
         if (!text) return setErr("Comment cannot be empty.");
@@ -124,7 +124,19 @@ export function Comments({ postId }) {
             {comments?.length === 0 && <p className="text-muted">No comments yet.</p>}
             {comments?.map((c) => (
                 <div key={c.id} className="media mb-4">
-                    <img src="/img/user.jpg" alt="" className="img-fluid mr-3 mt-1" style={{ width: 45 }} />
+                    {c.author_avatar_url ? (
+                        <img
+                            src={c.author_avatar_url}
+                            alt=""
+                            className="img-fluid mr-3 mt-1"
+                            style={{ width: 45 }}
+                        />
+                    ) : (
+                        <i
+                            className="fa fa-user-circle fa-3x mr-3 mt-1 text-secondary"
+                            aria-hidden="true"
+                        />
+                    )}
                     <div className="media-body">
                         <h6 className="font-weight-bold">
                             {c.author_email ?? "Reader"} <small><i>{formatDate(c.created_at)}</i></small>
