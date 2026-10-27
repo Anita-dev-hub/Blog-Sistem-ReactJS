@@ -33,6 +33,9 @@ export function Reactions({ postId }) {
     const mine = user ? rows.find((r) => r.user_id === user.id)?.value : undefined;
 
     async function react(value) {
+        if (!user) {
+        return setErr("Please sign in to react.");
+        }
         setErr(null);
         const res =
             mine === value
@@ -41,7 +44,7 @@ export function Reactions({ postId }) {
                     .from("reactions")
                     .upsert({ post_id: postId, user_id: user.id, value }, { onConflict: "post_id,user_id" });
         if (res.error) return setErr(res.error.message);
-        load();
+        await load();
     }
 
     return (
@@ -92,11 +95,16 @@ export function Comments({ postId }) {
 
     async function add(e) {
         e.preventDefault();
+
+        if (!user) {
+        return setErr("Please sign in to comment.");
+        } 
+
         const text = body.trim();
         if (!text) return setErr("Comment cannot be empty.");
         if (text.length > 2000) return setErr("Comment is too long (max 2000 characters).");
         setErr(null);
-        const { error } = await supabase.from("comments").insert({ post_id: postId, body: text });
+        const { error } = await supabase.from("comments").insert({ post_id: postId, body: text, user_id: user.id });
         if (error) return setErr(error.message);
         setBody("");
         setNotice("Comment posted.");
