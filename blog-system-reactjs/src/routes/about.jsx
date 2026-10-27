@@ -2,7 +2,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Layout, PageHeader } from "../components/layout.jsx";
-import { supabase } from "../lib/supabase.js";
+import { supabase } from "../lib/client.js";
 
 export const Route = createFileRoute("/about")({
     component: About,
