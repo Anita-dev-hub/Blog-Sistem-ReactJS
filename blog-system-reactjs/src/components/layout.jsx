@@ -36,6 +36,36 @@ export function Layout({ children }) {
               <i className="fab fa-instagram"></i>
             </a>
           </div>
+
+
+          <div className="d-flex flex-column mb-4">
+            <Link to="/" className="nav-link">Home</Link>
+            <Link to="/about" className="nav-link">About</Link>
+            <Link to="/blog" className="nav-link">Blog</Link>
+            <Link to="/new" className="nav-link">Write</Link>
+            <Link to="/contact" className="nav-link">Contact</Link>
+
+            {user ? (
+              <button
+                type="button"
+                className="nav-link border-0 bg-transparent"
+                onClick={async () => {
+                  const { error } = await signOut();
+                  if (error) {
+                    console.error(error.message);
+                    return;
+                  }
+                  qc.clear();
+                  await navigate({ to: "/login", replace: true });
+                }}
+              >
+                Sign out ({email})
+              </button>
+            ) : (
+              <Link to="/login" className="nav-link">Sign in</Link>
+            )}
+          </div>
+
           <Link to="/new" className="btn btn-lg btn-block btn-primary mt-auto">
             Write a Post
           </Link>
