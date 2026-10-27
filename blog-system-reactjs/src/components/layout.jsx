@@ -46,7 +46,10 @@ export function Layout({ children }) {
       </div>
       <div className="content">
         <div className="container p-0">
-          <nav className="navbar navbar-expand-lg bg-secondary navbar-dark">
+          <nav
+            className="navbar navbar-expand-lg bg-secondary navbar-dark"
+            style={{ display: "flex", visibility: "visible" }}
+          >
             <span className="navbar-brand d-block d-lg-none">Navigation</span>
             <button type="button" className="navbar-toggler" onClick={() => setOpen(!open)}>
               <span className="navbar-toggler-icon"></span>
@@ -91,30 +94,30 @@ export function Layout({ children }) {
                       await navigate({ to: "/login", replace: true });
                     }}
                   >
-                Sign out ({email})
-              </a>
-              ) : (
-              <Link to="/login" className={nav} activeProps={{ className: "active" }}>
-                Sign in
-              </Link>
+                    Sign out ({email})
+                  </a>
+                ) : (
+                  <Link to="/login" className={nav} activeProps={{ className: "active" }}>
+                    Sign in
+                  </Link>
                 )}
+              </div>
             </div>
+          </nav>
         </div>
-      </nav>
-    </div>
-        { children }
-  <div className="container py-4 bg-secondary text-center">
-    <p className="m-0 text-white">
-      &copy;{" "}
-      <Link className="text-white font-weight-bold" to="/">
-        Bloggy
-      </Link>
-      . All Rights Reserved. Designed by{" "}
-      <a className="text-white font-weight-bold" href="https://htmlcodex.com">
-        HTML Codex
-      </a>
-    </p>
-  </div>
+        {children}
+        <div className="container py-4 bg-secondary text-center">
+          <p className="m-0 text-white">
+            &copy;{" "}
+            <Link className="text-white font-weight-bold" to="/">
+              Bloggy
+            </Link>
+            . All Rights Reserved. Designed by{" "}
+            <a className="text-white font-weight-bold" href="https://htmlcodex.com">
+              HTML Codex
+            </a>
+          </p>
+        </div>
       </div >
     </div >
   );
