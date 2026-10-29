@@ -250,7 +250,63 @@ export function Comments({ postId }) {
                         <h6 className="font-weight-bold">
                             {c.author_email ?? "Reader"} <small><i>{formatDate(c.created_at)}</i></small>
                         </h6>
-                        <p className="mb-1" style={{ whiteSpace: "pre-wrap" }}>{c.body}</p>
+
+                        {editingId === c.id ? (
+                            <div className="mb-2">
+                                <textarea
+                                    className="form-control mb-2"
+                                    rows={3}
+                                    maxLength={2000}
+                                    value={editBody}
+                                    onChange={(e) => setEditBody(e.target.value)}
+                                    disabled={savingEdit}
+                                    aria-label="Edit comment"
+                                />
+
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-primary mr-2"
+                                    onClick={() => saveEdit(c.id)}
+                                    disabled={savingEdit}
+                                >
+                                    {savingEdit ? "Saving..." : "Save"}
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-outline-secondary"
+                                    onClick={cancelEdit}
+                                    disabled={savingEdit}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        ) : (
+                            <p className="mb-1" style={{ whiteSpace: "pre-wrap" }}>
+                                {c.body}
+                            </p>
+                        )}
+
+                        {user?.id === c.user_id && editingId !== c.id && (
+                            <>
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-link p-0 mr-3"
+                                    onClick={() => startEdit(c)}
+                                >
+                                    Edit
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-link text-danger p-0"
+                                    onClick={() => remove(c.id)}
+                                >
+                                    Delete
+                                </button>
+                            </>
+                        )}
+
                         {user?.id === c.user_id && (
                             <button className="btn btn-sm btn-link text-danger p-0" onClick={() => remove(c.id)}>Delete</button>
                         )}
