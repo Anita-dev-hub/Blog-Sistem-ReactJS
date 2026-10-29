@@ -4,59 +4,108 @@ import { supabase } from "../auth/client.js";
 import { useAuth } from "../lib/auth";
 import { formatDate } from "../lib/blog";
 
+
 export function Reactions({ postId }) {
     const { user } = useAuth();
     const [rows, setRows] = useState([]);
     const [err, setErr] = useState(null);
+    const [pending, setPending] = useState(false);
 
-    const load = useCallback(
-        async (signal) => {
-            let q = supabase.from("reactions").select("user_id, value").eq("post_id", postId);
-            if (signal) q = q.abortSignal(signal);
-            const { data, error } = await q;
-            if (signal?.aborted) return;
-            if (error) return setErr(error.message);
-            setRows(data);
-        },
-        [postId],
-    );
+    const load = useCallback(async (signal) => {
+        let query = supabase
+            .from("reactions")
+            .select("user_id, value")
+            .eq("post_id", postId);
 
-    // Mount and update: reload whenever the post changes; abort on unmount/change.
+        if (signal) query = query.abortSignal(signal);
+
+        const { data, error } = await query;
+
+        if (signal?.aborted) return;
+
+        if (error) {
+            setErr(error.message);
+            return;
+        }
+
+        setRows(data ?? []);
+    }, [postId]);
+
     useEffect(() => {
-        const ctrl = new AbortController();
-        load(ctrl.signal);
-        return () => ctrl.abort();
+        const controller = new AbortController();
+        load(controller.signal);
+
+        return () => controller.abort();
     }, [load]);
 
     const likes = rows.filter((r) => r.value === 1).length;
-    const dislikes = rows.filter((r) => r.value === -1).length;
-    const mine = user ? rows.find((r) => r.user_id === user.id)?.value : undefined;
+    const mine = user
+        ? rows.find((r) => r.user_id === user.id)?.value
+        : undefined;
 
-    async function react(value) {
-        if (!user) {
-            return setErr("Please sign in to react.");
-        }
+    async function toggleLike() {
+        if (!user || pending) return;
+
+        setPending(true);
         setErr(null);
-        const res =
-            mine === value
-                ? await supabase.from("reactions").delete().eq("post_id", postId).eq("user_id", user.id)
+
+        try {
+            const result = mine === 1
+                ? await supabase
+                    .from("reactions")
+                    .delete()
+                    .eq("post_id", postId)
+                    .eq("user_id", user.id)
                 : await supabase
                     .from("reactions")
-                    .upsert({ post_id: postId, user_id: user.id, value }, { onConflict: "post_id,user_id" });
-        if (res.error) return setErr(res.error.message);
-        await load();
+                    .upsert(
+                        {
+                            post_id: postId,
+                            user_id: user.id,
+                            value: 1,
+                        },
+                        { onConflict: "post_id,user_id" }
+                    );
+
+            if (result.error) throw result.error;
+
+            await load();
+        } catch (error) {
+            setErr(error.message || "Could not update Like.");
+        } finally {
+            setPending(false);
+        }
     }
 
     return (
         <div className="mb-4">
-            <button className={`btn mr-2 ${mine === 1 ? "btn-primary" : "btn-outline-primary"}`} disabled={!user} onClick={() => react(1)} aria-label="Like">
-                <i className="fa fa-thumbs-up mr-1"></i> {likes}
+            <button
+                type="button"
+                className={`btn ${
+                    mine === 1
+                        ? "btn-primary"
+                        : "btn-outline-primary"
+                }`}
+                onClick={toggleLike}
+                disabled={!user || pending}
+                aria-pressed={mine === 1}
+                aria-label={mine === 1 ? "Unlike" : "Like"}
+            >
+                <i className="fa fa-thumbs-up mr-1" aria-hidden="true" />
+                {likes}
             </button>
-            <button className={`btn mr-2 ${mine === -1 ? "btn-primary" : "btn-outline-primary"}`} disabled={!user} onClick={() => react(-1)} aria-label="Dislike">
-                <i className="fa fa-thumbs-down mr-1"></i> {dislikes}
-            </button>
-            {!user && <small className="text-muted"><Link to="/login">Sign in</Link> to react.</small>}
-            {err && <div className="text-danger small mt-2">{err}</div>}
+
+            {!user && (
+                <small className="text-muted ml-2">
+                    <Link to="/login">Sign in</Link> to like.
+                </small>
+            )}
+
+            {err && (
+                <div className="text-danger small mt-2" role="alert">
+                    {err}
+                </div>
+            )}
         </div>
     );
 }
