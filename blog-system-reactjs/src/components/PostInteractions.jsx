@@ -92,7 +92,7 @@ export function Reactions({ postId }) {
                 aria-label={mine === 1 ? "Unlike" : "Like"}
             >
                 <i className="fa fa-thumbs-up mr-1" aria-hidden="true" />
-                {likes}
+                Like {likes}
             </button>
 
             {!user && (
