@@ -109,6 +109,106 @@ export function Reactions({ postId }) {
     );
 }
 
+
+export function CommentLike({ commentId }) {
+    const { user } = useAuth();
+    const [rows, setRows] = useState([]);
+    const [err, setErr] = useState(null);
+    const [pending, setPending] = useState(false);
+
+    const load = useCallback(async (signal) => {
+        let query = supabase
+            .from("comment_reactions")
+            .select("user_id")
+            .eq("comment_id", commentId);
+
+        if (signal) query = query.abortSignal(signal);
+
+        const { data, error } = await query;
+
+        if (signal?.aborted) return;
+
+        if (error) {
+            setErr(error.message);
+            return;
+        }
+
+        setRows(data ?? []);
+        setErr(null);
+    }, [commentId]);
+
+    useEffect(() => {
+        const controller = new AbortController();
+        load(controller.signal);
+
+        return () => controller.abort();
+    }, [load]);
+
+    const likes = rows.length;
+    const liked = Boolean(
+        user && rows.some((row) => row.user_id === user.id)
+    );
+
+    async function toggleLike() {
+        if (!user || pending) return;
+
+        setPending(true);
+        setErr(null);
+
+        try {
+            const result = liked
+                ? await supabase
+                    .from("comment_reactions")
+                    .delete()
+                    .eq("comment_id", commentId)
+                    .eq("user_id", user.id)
+                : await supabase
+                    .from("comment_reactions")
+                    .insert({
+                        comment_id: commentId,
+                        user_id: user.id,
+                    });
+
+            if (result.error) throw result.error;
+
+            await load();
+        } catch (error) {
+            setErr(error.message || "Could not update comment Like.");
+        } finally {
+            setPending(false);
+        }
+    }
+
+    return (
+        <div className="mt-2 mb-2">
+            <button
+                type="button"
+                className={`btn btn-sm ${liked ? "btn-primary" : "btn-outline-primary"
+                    }`}
+                onClick={toggleLike}
+                disabled={!user || pending}
+                aria-pressed={liked}
+                aria-label={liked ? "Unlike comment" : "Like comment"}
+            >
+                <i className="fa fa-thumbs-up mr-1" aria-hidden="true" />
+                Like {likes}
+            </button>
+
+            {!user && (
+                <small className="text-muted ml-2">
+                    <Link to="/login">Sign in</Link> to like.
+                </small>
+            )}
+
+            {err && (
+                <div className="text-danger small mt-1" role="alert">
+                    {err}
+                </div>
+            )}
+        </div>
+    );
+}
+
 export function Comments({ postId }) {
     const { user } = useAuth();
     const [comments, setComments] = useState(null);
@@ -286,6 +386,8 @@ export function Comments({ postId }) {
                                 {c.body}
                             </p>
                         )}
+
+                        <CommentLike commentId={c.id} />
 
                         {user?.id === c.user_id && editingId !== c.id && (
                             <>
