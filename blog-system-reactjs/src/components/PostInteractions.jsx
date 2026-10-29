@@ -81,11 +81,10 @@ export function Reactions({ postId }) {
         <div className="mb-4">
             <button
                 type="button"
-                className={`btn ${
-                    mine === 1
-                        ? "btn-primary"
-                        : "btn-outline-primary"
-                }`}
+                className={`btn ${mine === 1
+                    ? "btn-primary"
+                    : "btn-outline-primary"
+                    }`}
                 onClick={toggleLike}
                 disabled={!user || pending}
                 aria-pressed={mine === 1}
@@ -117,6 +116,9 @@ export function Comments({ postId }) {
     const [err, setErr] = useState(null);
     const [notice, setNotice] = useState(null);
     const [reload, setReload] = useState(0);
+    const [editingId, setEditingId] = useState(null);
+    const [editBody, setEditBody] = useState("");
+    const [savingEdit, setSavingEdit] = useState(false);
 
     // Mount + update on postId / reload; abort the pending request on unmount.
     useEffect(() => {
@@ -165,6 +167,64 @@ export function Comments({ postId }) {
         if (error) return setErr(error.message);
         setReload((n) => n + 1);
     }
+
+    function startEdit(comment) {
+        setEditingId(comment.id);
+        setEditBody(comment.body);
+        setErr(null);
+    }
+
+    function cancelEdit() {
+        setEditingId(null);
+        setEditBody("");
+        setErr(null);
+    }
+
+    async function saveEdit(id) {
+        if (!user || savingEdit) return;
+
+        const text = editBody.trim();
+
+        if (!text) {
+            setErr("Comment cannot be empty.");
+            return;
+        }
+
+        if (text.length > 2000) {
+            setErr("Comment is too long (max 2000 characters).");
+            return;
+        }
+
+        setSavingEdit(true);
+        setErr(null);
+
+        try {
+            const { data, error } = await supabase
+                .from("comments")
+                .update({ body: text })
+                .eq("id", id)
+                .eq("user_id", user.id)
+                .select("id");
+
+            if (error) throw error;
+
+            if (!data?.length) {
+                throw new Error(
+                    "Comment could not be updated. Check your permissions."
+                );
+            }
+
+            setEditingId(null);
+            setEditBody("");
+            setNotice("Comment updated.");
+            setReload((n) => n + 1);
+        } catch (error) {
+            setErr(error.message || "Could not update comment.");
+        } finally {
+            setSavingEdit(false);
+        }
+    }
+
 
     return (
         <div className="mb-4">
