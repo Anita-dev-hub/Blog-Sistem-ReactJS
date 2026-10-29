@@ -255,7 +255,12 @@ export function Comments({ postId }) {
         if (!text) return setErr("Comment cannot be empty.");
         if (text.length > 2000) return setErr("Comment is too long (max 2000 characters).");
         setErr(null);
-        const { error } = await supabase.from("comments").insert({ post_id: postId, body: text, user_id: user.id });
+        const { error } = await supabase.from("comments").insert({
+            post_id: postId,
+            body: text,
+            user_id: user.id,
+            author_email: user.email
+        });
         if (error) return setErr(error.message);
         setBody("");
         setNotice("Comment posted.");
