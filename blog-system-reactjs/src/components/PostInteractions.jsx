@@ -307,9 +307,6 @@ export function Comments({ postId }) {
                             </>
                         )}
 
-                        {user?.id === c.user_id && (
-                            <button className="btn btn-sm btn-link text-danger p-0" onClick={() => remove(c.id)}>Delete</button>
-                        )}
                     </div>
                 </div>
             ))}
