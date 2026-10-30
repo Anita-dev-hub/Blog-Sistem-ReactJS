@@ -134,7 +134,9 @@ function PostDetail() {
               {post.author_email && (
                 <p className="mr-3 text-muted">
                   <i className="fa fa-user" aria-hidden="true" />{" "}
-                  {post.author_email}
+                  {post.author_email
+                  //.split("@")[0]
+                  }
                 </p>
               )}
             </div>

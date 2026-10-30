@@ -1,6 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { excerpt, formatDate, imgOf } from "../lib/blog";
 export function PostRow({ post }) {
+    const authorName = post.author_email
+        ? post.author_email
+        //.split("@")[0]
+        : null;
+
     return (
         <div className="row blog-item px-3 pb-5">
             <div className="col-md-5">
@@ -15,6 +20,12 @@ export function PostRow({ post }) {
                     <small className="mr-2 text-muted">
                         <i className="fa fa-folder"></i> {post.topic}
                     </small>
+                    {authorName && (
+                        <small className="mr-2 text-muted">
+                            <i className="fa fa-user"></i>{" "}
+                            {authorName}
+                        </small>
+                    )}
                 </div>
                 <p>{excerpt(post.blog_text)}</p>
                 <Link className="btn btn-link p-0" to="/blog/$id" params={{ id: post.id }}>
