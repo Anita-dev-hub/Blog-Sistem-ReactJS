@@ -353,7 +353,12 @@ export function Comments({ postId }) {
                     )}
                     <div className="media-body">
                         <h6 className="font-weight-bold">
-                            {c.author_email ?? "Reader"} <small><i>{formatDate(c.created_at)}</i></small>
+                            {c.author_email
+                                ? c.author_email.split("@")[0]
+                                : "Reader"
+                            }
+                            {" "}
+                            <small><i>{formatDate(c.created_at)}</i></small>
                         </h6>
 
                         {editingId === c.id ? (
