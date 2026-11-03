@@ -101,7 +101,7 @@ function EditPost() {
         <Link to="/blog">Back to the blog</Link>
       </div>
     );
-  } else if (!user || post.author_id !== user.id) {
+  } else if (!user || post.user_id !== user.id) {
     body = (
       <div className="alert alert-warning">
         Only the author can edit this post.{" "}

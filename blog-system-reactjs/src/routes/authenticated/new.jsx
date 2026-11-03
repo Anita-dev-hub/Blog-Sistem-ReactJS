@@ -57,9 +57,21 @@ function NewPost() {
     setErr(null);
 
     try {
+      const { data: { user }, error: authError } =
+        await supabase.auth.getUser();
+
+      if (authError) throw authError;
+
+      if (!user) {
+        throw new Error("You must be logged in to create a new post.");
+      }
+
       const { data, error } = await supabase
         .from("blogs")
-        .insert(values)
+        .insert({
+          ...values,
+          user_id: user.id,
+        })
         .select("id")
         .single();
 

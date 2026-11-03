@@ -65,7 +65,7 @@ function PostDetail() {
 
   if (!post) return <PostNotFound />;
 
-  const isOwner = Boolean(user && user.id === post.author_id);
+  const isOwner = Boolean(user && user.id === post.user_id);
 
   async function remove() {
     if (deleting) return;
